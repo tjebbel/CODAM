@@ -13,90 +13,84 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   ft_strjoin.c                                       :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: tlodeize <tlodeize@student.42.fr>            +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2026/02/07 13:49:55 by tlodeize      #+#    #+#                 */
+/*   Updated: 2026/02/12 15:55:47 by tlodeize      ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
 
-int	ft_strlen(char *str)
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+
+int		ft_strlen(char *str)
 {
-	if (!str)
-        return 0;
-		
-	int	length;
+	int	len;
 
-	length = 0;
-	while (str[length] != '\0')
+	len = 0;
+	while (*str)
 	{
-		length++;
+		len++;
+		str++;
 	}
-	return (length);
+	return (len);
 }
 
-int ft_total_length(int size, char **strs, char *sep)
+char	*ft_strcpy(char *dest, char *src)
 {
 	int i;
-	int total;
 
 	i = 0;
-	total = 0;
-	
-	while (i < size)
+	while (src[i] != '\0')
 	{
-		total = total + ft_strlen(strs[i]);
+		*dest = src[i];
+		i++;
+		dest++;
 	}
-	total = total + (size -1) * ft_strlen(sep) + 1;
-	return (total);
-}
-
-char	*ft_strcat(char *dest, char *src)
-{
-	int idest;
-	int isrc;
-
-	idest = 0;
-	isrc = 0;
-	
-	while (dest[idest] !='\0')
-	{
-		idest++;
-	}
-	while (src[isrc] != '\0')
-	{
-		dest[idest] = src[isrc];
-		idest++;
-		isrc++;
-	}
-	dest[idest] ='\0';
 	return (dest);
 }
 
-char *populate_str(char *ptr, int size, char **strs, char *sep)
+int		total_length(int size, char **strs, int size_sep)
 {
 	int i;
+	int len;
 
-	i = 0;
-	
-	while(i <size)
-	{
-		ptr = ft_strcat(ptr, strs[i]);
-		if (i != size -1)
-			ptr = ft_strcat(ptr,sep);
-		i++;
-	}
-	return (ptr);
+	i = -1;
+	len = size_sep * -1;
+	while (++i < size)
+		len += size_sep + ft_strlen(strs[i]);
+	return (len);
 }
 
-char *ft_strjoin(int size, char **strs, char *sep) 
+char	*ft_strjoin(int size, char **strs, char *sep)
 {
-    char *ptr;
+	int		i;
+	char	*res;
+	int		len;
 
-    if (size == 0) {
-        return (char *)malloc(sizeof(char));
-    }
-
-    ptr = (char *)malloc(ft_total_length(size, strs, sep) * sizeof(char));
-    if (!ptr) {
-        return NULL;
-    }
-
-    return populate_str(ptr, size, strs, sep);
+	if (size == 0)
+	{
+		res = (char*)malloc(1);
+		return (res);
+	}
+	len = total_length(size, strs, ft_strlen(sep));
+	i = -1;
+	if ((res = malloc(sizeof(char) * (len + 1))) == NULL)
+		return (0);
+	while (++i < size)
+	{
+		res = ft_strcpy(res, strs[i]);
+		if (i + 1 < size)
+			res = ft_strcpy(res, sep);
+	}
+	*res = '\0';
+	return (res - len);
 }
 
 /* int main() {
